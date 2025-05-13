@@ -3,7 +3,7 @@ from playwright.sync_api import expect, sync_playwright
 from dotenv import load_dotenv
 from prevzatie_balika_API_sync import update_order_state
 import os
-# DPD Shop2Shop - dopln popis ak chces
+# DPD Shop2Shop - Tento test vytvori objednavku na Locker 2 Locker s Dobierkou, zaplati za dopravu a nasledne ju prevezme do prepravy do Lockera
 
 load_dotenv()
 
