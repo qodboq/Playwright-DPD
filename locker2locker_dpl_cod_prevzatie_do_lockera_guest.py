@@ -67,6 +67,7 @@ def test_vo2_bbx_dpl_cod():
         page.get_by_role("button", name="Prijať všetko").click()
         page.get_by_role("link", name="Poslať zásielku").first.click()
         page.get_by_role("button", name="Pokračovať").first.click()
+        page.wait_for_timeout(timeout=2000)
         page.get_by_role("textbox", name="Meno").fill("Erik")
         page.get_by_role("textbox", name="Priezvisko").fill("Valigurský")
         page.get_by_role("textbox", name="Email").fill("erik.valigursky@bootiq.io")
@@ -79,6 +80,7 @@ def test_vo2_bbx_dpl_cod():
         page.get_by_text("DPDBox (Avion)").click()
         page.get_by_role("checkbox", name="Prosím, pre ďalší krok a").check()
         page.get_by_role("button", name="Pokračovať").click()
+        page.wait_for_timeout(timeout=2000)
 
         page.get_by_role("textbox", name="Meno").clear()
         page.get_by_role("textbox", name="Meno").fill("Test")
@@ -99,12 +101,14 @@ def test_vo2_bbx_dpl_cod():
         page.get_by_role("button", name="Pokračovať").click()
         page.get_by_role("button", name="Pokračovať na výber platby").click()
         page.get_by_role("button", name="Potvrdiť objednávku").click()
+        page.wait_for_timeout(timeout=2000)
 
         assert cisloKarty and platnost and cvv, "Chýbajú hodnoty z .env súboru!"
         page.get_by_role("textbox", name="Číslo karty").fill(cisloKarty)
         page.get_by_role("textbox", name="Platnosť").fill(platnost)
         page.get_by_role("textbox", name="CVV").fill(cvv)
         page.get_by_role("button", name="ZAPLATIŤ").click()
+        page.wait_for_timeout(timeout=2000)
 
         page.get_by_role("button", name="Pokračovať").click()
         expect(page.get_by_role("heading", name="Hotovo")).to_be_visible()
