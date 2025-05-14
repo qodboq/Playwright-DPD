@@ -19,14 +19,14 @@ def get_order_id(page) -> str | None:
             match = re.search(r'\d+', order_text)
             if match:
                 order_id = match.group()
-                print(f"Číslo objednávky: {order_id}")
+                print(f"✅ Číslo objednávky: {order_id}")
                 return order_id
             else:
-                print("Číslo objednávky nebolo nájdené.")
+                print("❌ Číslo objednávky nebolo nájdené.")
         else:
-            print("Žiadny element s objednávkou nebol nájdený.")
+            print("❌ Žiadny element s objednávkou nebol nájdený.")
     finally:
-        print("funkcia get_order_id skoncila")
+        print("✅ Funkcia get_order_id skoncila")
 
 
 def update_order_state_api(request_context: APIRequestContext, order_id: str, api_key: str, data: dict) -> int | None:
