@@ -100,7 +100,7 @@ def test_vo2_bbx_dpl_cod():
 
         response_status_api = update_order_state(order_id2, api_key, data)
         assert response_status_api == 200
-        page.screenshot(path="screenshot.png")
+        #page.screenshot(path="screenshot.png")
 
         context.close()
         browser.close()
