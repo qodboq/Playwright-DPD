@@ -74,7 +74,6 @@ def test_vo2_bbx_dpl_cod():
         page.get_by_role("textbox", name="Telefón").fill("+421948328484")
         page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Bratislava")
         page.get_by_role("menuitem", name="Bratislava Devín -").click()
-        page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").nth(1).click()
         page.get_by_role("textbox", name="Ulica").fill("Ulica")
         page.get_by_role("textbox", name="Popisné číslo").fill("1")
         page.get_by_text("DPDBox (Avion)").click()
@@ -93,13 +92,14 @@ def test_vo2_bbx_dpl_cod():
         page.get_by_role("checkbox", name="Poslať na adresu Poslať do").uncheck()
 
         page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Poprad")
-        page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").nth(1).fill("05801")
+        page.get_by_role("menuitem", name="Poprad -").click()
         page.get_by_role("textbox", name="Ulica").fill("Ulica")
         page.get_by_role("textbox", name="Popisné číslo").fill("1")
         page.get_by_role("button", name="Pokračovať").click()
 
-        page.get_by_role("img", name="add-parcel-icon").click()
-        page.locator("div").filter(has_text=re.compile(r"^váha:do 1 kgdĺžka:45 cmšírka:35 cmvýška:20 cmPridať$")).get_by_role("button").click()
+
+        page.locator(".add-package-title").click()
+        page.locator("div").filter(has_text=re.compile(r"^váha:do 5 kgdĺžka:55 cmšírka:45 cmvýška:17 cmPridať$")).get_by_role("button").click()
         page.get_by_role("checkbox", name="Poslať dobierkový balík").check()
         page.wait_for_timeout(timeout=2000)
         page.get_by_role("textbox", name="Dobierková suma").fill("1")
