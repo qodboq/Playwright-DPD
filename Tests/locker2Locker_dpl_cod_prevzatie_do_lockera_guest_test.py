@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import json
 import os
 
+# Test Locker 2 Locker s dobierkou neprihlaseny pouzivatel a prebratie zasielky
+
 # Načítanie údajov z .env
 load_dotenv()
 cisloKarty = os.getenv("CISLO_KARTY")
