@@ -1,5 +1,5 @@
 import re
-from playwright.sync_api import sync_playwright, APIRequestContext, expect
+from playwright.sync_api import Playwright, Page, APIRequestContext, expect
 from dotenv import load_dotenv
 import json
 import os
@@ -56,11 +56,8 @@ def update_order_state_api(request_context: APIRequestContext, order_id: str, ap
         return None
 
 
-def test_vo2_bbx_dpl_cod():
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
-        context = browser.new_context()
-        page = context.new_page()
+def test_vo2_bbx_dpl_cod(page: Page, playwright: Playwright) -> None:
+
 
         # --- UI FLOW ---
         page.goto("https://twww.dpdmojkurier.sk/")
@@ -118,7 +115,7 @@ def test_vo2_bbx_dpl_cod():
         assert order_id is not None, "Objednávka nebola nájdená"
 
         # --- API volanie cez Playwright ---
-        request_context = p.request.new_context()
+        request_context = playwright.request.new_context()
         api_key = "21c24472-ivua-2590-jluw-6b4dee64ddaa"
         data = {
             "state": "RECEIVED",
@@ -130,5 +127,4 @@ def test_vo2_bbx_dpl_cod():
 
         # Čistenie
         request_context.dispose()
-        context.close()
-        browser.close()
+
