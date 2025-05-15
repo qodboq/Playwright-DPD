@@ -58,7 +58,7 @@ def update_order_state_api(request_context: APIRequestContext, order_id: str, ap
         return None
 
 
-def test_vo2_bbx_dpl_cod(page: Page, playwright: Playwright) -> None:
+def test_l2l_cod_dpl(page: Page, playwright: Playwright) -> None:
 
 
         # --- UI FLOW ---

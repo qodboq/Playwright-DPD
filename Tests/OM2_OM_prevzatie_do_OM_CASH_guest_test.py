@@ -6,7 +6,7 @@ from playwright.sync_api import Page, expect
 
 # Tento test odosle objednavku z OM na OM - OM2_OM_prevzatie_do_OM_CASH_guest_test.py (Plata pri prevzati)
 # Este bude treba osetrit spomalenost stranky a problemy s tym spojene
-def test_objednavka_neprihlaseny(page: Page) -> None:
+def test_om2om_(page: Page) -> None:
 
 # Open page DPDmojkurier.sk
     page.goto("https://twww.dpdmojkurier.sk/")
