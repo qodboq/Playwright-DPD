@@ -3,6 +3,7 @@ from playwright.sync_api import Page
 
 
 # TOTO JE LEN UPLNE NA HRUBO, A NIE JE TAM PREBRATIE KURIEROM Z DOVODU NEFUNKCNOSTI CASHAPP V DANOM MOMENTE.
+# Vytvorenie objednavjy by malo fungovat, ale treba to precistit.
 
 def test_kurier2home_cod(page: Page) -> None:
 
