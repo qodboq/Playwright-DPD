@@ -2,9 +2,9 @@ import re
 from playwright.sync_api import Page
 
 
-# TOTO JE LEN UPLNE NA HRUBO, A NIE JE TAM PREBRATIE KURIEROM Z DOVODU NEFUNKCNOSTI CASHAPP V DANOM MOMENTE
+# TOTO JE LEN UPLNE NA HRUBO, A NIE JE TAM PREBRATIE KURIEROM Z DOVODU NEFUNKCNOSTI CASHAPP V DANOM MOMENTE.
 
-def test_kurier2kurier_cod(page: Page) -> None:
+def test_kurier2home_cod(page: Page) -> None:
 
 
     page.goto("https://twww.dpdmojkurier.sk/")
