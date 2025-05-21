@@ -67,6 +67,7 @@ def vytvor_objednavku(page: Page) -> str:
     parcel_number = data["o10_parcel_number"]
     assert parcel_number is not None, "Chýba o10_parcel_number v odpovedi!"
     return parcel_number
+    print(parcel_number)
 
 
 def test_prijatie_zasielky_kurierom(page: Page, vytvor_objednavku: str) -> None:
@@ -86,3 +87,6 @@ def test_prijatie_zasielky_kurierom(page: Page, vytvor_objednavku: str) -> None:
     page.get_by_role("radio", name="Hotovosť").check()
     page.get_by_role("button", name="Zásielka uhradená").click()
     assert page.get_by_role("heading", name="Úspešne odoslané")
+    print(f"(✔️) Zásielka {parcel_number} bola prijatá do prepravy kuriérom")
+
+
