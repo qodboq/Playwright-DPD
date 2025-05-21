@@ -72,7 +72,6 @@ def vytvor_objednavku(page: Page) -> str:
 def test_prijatie_zasielky_kurierom(page: Page, vytvor_objednavku: str) -> None:
     parcel_number = vytvor_objednavku
     page.goto("https://twww.dpdmojkurier.sk/")
-    # page.get_by_role("button", name="Prijať všetko").click()
     page.get_by_role("link", name="Prihlásenie").click()
     page.get_by_role("textbox", name="Login").fill("erik.valigursky+ku@bootiq.io")
     page.locator("#password").fill("123123")
