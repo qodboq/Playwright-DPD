@@ -4,6 +4,8 @@ from playwright.sync_api import Page
 from dotenv import load_dotenv
 import os
 
+# Test objednavka zvoz kurierom, prebratie kurierom, platba pri prebrati
+
 # Načítanie údajov z .env
 load_dotenv()
 cisloKarty = os.getenv("CISLO_KARTY")
@@ -66,8 +68,9 @@ def vytvor_objednavku(page: Page) -> str:
     data = response.json()
     parcel_number = data["o10_parcel_number"]
     assert parcel_number is not None, "Chýba o10_parcel_number v odpovedi!"
-    return parcel_number
     print(parcel_number)
+    return parcel_number
+
 
 
 def test_prijatie_zasielky_kurierom(page: Page, vytvor_objednavku: str) -> None:
