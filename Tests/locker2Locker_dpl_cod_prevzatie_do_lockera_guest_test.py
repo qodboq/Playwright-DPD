@@ -57,16 +57,15 @@ def update_order_state_api(request_context: APIRequestContext, order_id: str, ap
         print(f"❌ Výnimka: {e}")
         return None
 
-
+# Objednavka na Locker
 def test_l2l_cod_dpl(page: Page, playwright: Playwright) -> None:
-
-
-        # --- UI FLOW ---
         page.goto("https://twww.dpdmojkurier.sk/")
         page.get_by_role("button", name="Prijať všetko").click()
         page.get_by_role("link", name="Poslať zásielku").first.click()
         page.get_by_role("button", name="Pokračovať").first.click()
         page.wait_for_timeout(timeout=2000)
+
+        #Sender
         page.get_by_role("textbox", name="Meno").fill("Erik")
         page.get_by_role("textbox", name="Priezvisko").fill("Valigurský")
         page.get_by_role("textbox", name="Email").fill("erik.valigursky@bootiq.io")
@@ -81,6 +80,7 @@ def test_l2l_cod_dpl(page: Page, playwright: Playwright) -> None:
         page.get_by_role("button", name="Pokračovať").click()
         page.wait_for_timeout(timeout=2000)
 
+        #Reciever
         page.get_by_role("textbox", name="Meno").clear()
         page.get_by_role("textbox", name="Meno").fill("Test")
         page.get_by_role("textbox", name="Priezvisko").clear()
@@ -90,10 +90,13 @@ def test_l2l_cod_dpl(page: Page, playwright: Playwright) -> None:
         page.get_by_text("AlzaBox (N-CENTRO)").click()
         page.get_by_role("button", name="Pokračovať").click()
 
+        #Package
         page.get_by_role("img", name="add-parcel-icon").click()
         page.locator("div").filter(has_text=re.compile(r"^váha:do 1 kgdĺžka:45 cmšírka:35 cmvýška:20 cmPridať$")).get_by_role("button").click()
         page.get_by_role("checkbox", name="Poslať dobierkový balík").check()
         page.wait_for_timeout(timeout=2000)
+
+        #Dobierka
         page.get_by_role("textbox", name="Dobierková suma").fill("1")
         page.get_by_role("textbox", name="IBAN").fill("SK4075000000007777777777")
         page.get_by_role("textbox", name="Variabilný symbol").fill("2221178")
@@ -102,6 +105,7 @@ def test_l2l_cod_dpl(page: Page, playwright: Playwright) -> None:
         page.get_by_role("button", name="Potvrdiť objednávku").click()
         page.wait_for_timeout(timeout=2000)
 
+        #Platba Kartou
         assert cisloKarty and platnost and cvv, "Chýbajú hodnoty z .env súboru!"
         page.get_by_role("textbox", name="Číslo karty").fill(cisloKarty)
         page.get_by_role("textbox", name="Platnosť").fill(platnost)

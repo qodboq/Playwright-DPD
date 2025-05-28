@@ -14,7 +14,7 @@ def test_om2om_(page: Page) -> None:
     # Prijatie cookies
     page.get_by_role("button", name="Prijať všetko").click()
 
-    # Vytvorenie bjednavky na OM DPD Bratislava (Odosielatel)
+    # Vytvorenie bjednavky na OM DPD Bratislava (Sender)
     page.get_by_role("link", name="Poslať zásielku").first.click()
     page.get_by_role("button", name="Pokračovať").first.click()
     page.get_by_role("textbox", name="Meno").fill("Erik")
@@ -30,8 +30,9 @@ def test_om2om_(page: Page) -> None:
     page.get_by_text("Pobočka DPD BRATISLAVA").click()
     page.get_by_role("checkbox", name="Prosím, pre ďalší krok a").check()
     page.get_by_role("button", name="Pokračovať").click()
+    page.wait_for_timeout(timeout=2000)
 
-    # Vytvorenie bjednavky na OM DPD Bratislava (Prijimatel)
+    # Vytvorenie bjednavky na OM DPD Bratislava (Reciever)
     page.get_by_role("textbox", name="Meno").click()
     page.get_by_role("textbox", name="Meno").fill("Test")
     page.get_by_role("textbox", name="Priezvisko").fill("Test")
@@ -45,8 +46,9 @@ def test_om2om_(page: Page) -> None:
     page.get_by_role("textbox", name="Ulica").fill("Ulica")
     page.get_by_role("textbox", name="Popisné číslo").fill("1")
     page.get_by_role("button", name="Pokračovať").click()
+    page.wait_for_timeout(timeout=2000)
 
-    # Pridanie balika
+    # Parcel
     page.get_by_role("img", name="add-parcel-icon").click()
     page.locator("div").filter(has_text=re.compile(r"^váha:do 5 kgdĺžka:55 cmšírka:45 cmvýška:20 cmPridať$")).get_by_role("button").click()
     page.get_by_role("button", name="Pokračovať").click()

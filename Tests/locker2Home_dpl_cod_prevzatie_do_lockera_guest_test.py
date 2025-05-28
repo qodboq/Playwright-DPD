@@ -55,16 +55,15 @@ def update_order_state_api(request_context: APIRequestContext, order_id: str, ap
         print(f"❌ Výnimka: {e}")
         return None
 
-
+# Objednávka na Locker
 def test_l2h_cod_dpl(page: Page, playwright: Playwright) -> None:
-
-
-        # --- UI FLOW ---
         page.goto("https://twww.dpdmojkurier.sk/")
         page.get_by_role("button", name="Prijať všetko").click()
         page.get_by_role("link", name="Poslať zásielku").first.click()
         page.get_by_role("button", name="Pokračovať").first.click()
         page.wait_for_timeout(timeout=2000)
+
+        #Sender
         page.get_by_role("textbox", name="Meno").fill("Erik")
         page.get_by_role("textbox", name="Priezvisko").fill("Valigurský")
         page.get_by_role("textbox", name="Email").fill("erik.valigursky@bootiq.io")
@@ -78,6 +77,7 @@ def test_l2h_cod_dpl(page: Page, playwright: Playwright) -> None:
         page.get_by_role("button", name="Pokračovať").click()
         page.wait_for_timeout(timeout=2000)
 
+        #Reciever
         page.get_by_role("textbox", name="Meno").clear()
         page.get_by_role("textbox", name="Meno").fill("Test")
         page.get_by_role("textbox", name="Priezvisko").clear()
@@ -87,14 +87,13 @@ def test_l2h_cod_dpl(page: Page, playwright: Playwright) -> None:
 
         #poslat na domacu adresu
         page.get_by_role("checkbox", name="Poslať na adresu Poslať do").uncheck()
-
         page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Poprad")
         page.get_by_role("menuitem", name="Poprad -").click()
         page.get_by_role("textbox", name="Ulica").fill("Ulica")
         page.get_by_role("textbox", name="Popisné číslo").fill("1")
         page.get_by_role("button", name="Pokračovať").click()
 
-
+        # Package
         page.locator(".add-package-title").click()
         page.locator("div").filter(has_text=re.compile(r"^váha:do 5 kgdĺžka:55 cmšírka:45 cmvýška:17 cmPridať$")).get_by_role("button").click()
         page.get_by_role("checkbox", name="Poslať dobierkový balík").check()
@@ -106,7 +105,7 @@ def test_l2h_cod_dpl(page: Page, playwright: Playwright) -> None:
         page.get_by_role("button", name="Pokračovať na výber platby").click()
         page.get_by_role("button", name="Potvrdiť objednávku").click()
 
-
+        # Platba kartou
         assert cisloKarty and platnost and cvv, "Chýbajú hodnoty z .env súboru!"
         page.wait_for_url("https://moja.tatrabanka.sk/cgi-bin/e-commerce/start/cardpay")
         page.get_by_role("textbox", name="Číslo karty").fill(cisloKarty)

@@ -34,7 +34,7 @@ def vytvor_objednavku(page: Page) -> str:
     page.get_by_role("button", name="Pokračovať").click()
     page.wait_for_timeout(timeout=2000)
 
-    # Prijemca
+    # Reciever
     page.get_by_role("textbox", name="Meno").fill("Test")
     page.get_by_role("textbox", name="Priezvisko").fill("Test")
     page.get_by_role("textbox", name="Email").fill("email@email.com")
