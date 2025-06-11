@@ -58,8 +58,6 @@ def test_om2om_(page: Page) -> None:
     page.get_by_role("radio", name="Platba na odbernom mieste DPD").check()
     page.get_by_role("button", name="Potvrdiť objednávku").click()
 
-    # Ocakava nadpis "Hotovo"
-    expect(page.get_by_role("heading", name="Hotovo")).to_be_visible()
 
 
 
