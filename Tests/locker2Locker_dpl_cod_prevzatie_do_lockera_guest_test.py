@@ -85,7 +85,7 @@ def test_l2l_cod_dpl(page: Page, playwright: Playwright) -> None:
         page.get_by_role("textbox", name="Meno").fill("Test")
         page.get_by_role("textbox", name="Priezvisko").clear()
         page.get_by_role("textbox", name="Priezvisko").fill("Test")
-        page.get_by_role("textbox", name="Email").fill("email@email.com")
+        page.get_by_role("textbox", name="Email").fill("erik.valigursky@bootiq.sk")
         page.get_by_role("textbox", name="Telefón").fill("+421948328484")
         page.get_by_text("AlzaBox (N-CENTRO)").click()
         page.get_by_role("button", name="Pokračovať").click()
