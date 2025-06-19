@@ -48,7 +48,7 @@ def test_om2om_(page: Page) -> None:
     page.get_by_role("button", name="Pokračovať").click()
     page.wait_for_timeout(timeout=2000)
 
-    # Parcel
+    # Package
     page.get_by_role("img", name="add-parcel-icon").click()
     page.locator("div").filter(has_text=re.compile(r"^váha:do 5 kgdĺžka:55 cmšírka:45 cmvýška:20 cmPridať$")).get_by_role("button").click()
     page.get_by_role("button", name="Pokračovať").click()
