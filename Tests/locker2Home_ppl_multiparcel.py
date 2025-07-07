@@ -56,7 +56,7 @@ def update_order_state_api(request_context: APIRequestContext, order_id: str, ap
         return None
 
 # Objednávka na Locker
-def test_l2h_cod_dpl(page: Page, playwright: Playwright) -> None:
+def test_l2h_cod_ppl(page: Page, playwright: Playwright) -> None:
         page.goto("https://twww.dpdmojkurier.sk/")
         page.get_by_role("button", name="Prijať všetko").click()
         page.get_by_role("link", name="Poslať zásielku").first.click()
