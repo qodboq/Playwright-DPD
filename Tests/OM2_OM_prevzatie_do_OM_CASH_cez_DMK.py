@@ -4,7 +4,7 @@ from playwright.sync_api import Page, expect
 
 
 
-# Tento test odosle objednavku z OM na OM - OM2_OM_prevzatie_do_OM_CASH_guest_test.py (Platba pri prevzati)
+# Tento test odosle objednavku z OM na OM - OM2_OM_prevzatie_do_OM_CASH_cez_DMK.py (Platba pri prevzati)
 
 def test_om2om_(page: Page) -> None:
 
