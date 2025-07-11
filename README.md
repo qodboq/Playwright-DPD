@@ -17,4 +17,13 @@ V Pycharme si vytvor nový projekt (stiahni tento z GitLabu)
 návody nájdeš na internete, alebo ti pomože Kolega/AI.
 Tento link ti pomôže začať: https://playwright.dev/python/docs/intro
 
-Pred začatím spúštania testov je potrebné lokálne skopírovať a premenovať súbor .env.example na .env a doplniť do neho údaje testovacej karty pre platbu na platobnej bráne.
+Pred začatím spúštania testov je potrebné lokálne skopírovať a premenovať súbor .env.
+
+Pridaj si repozitár do Pycharmu
+git clone https://gitlab.bootiq.io/automatizovane-testy/dpd-mk.git
+
+- cd.. cesta do Projektu
+- python -m venv .venv (vytvori nove virtualne prostredie)
+- .venv\Scripts\activate (aktivuje ho)
+- playwright install (nainstaluj playwright)
+- Prejdi do nastaveni Pycharmu>Project interpreter>add interpreter>Pridat existujúci>vyber .venv/Scripts/python.exe
