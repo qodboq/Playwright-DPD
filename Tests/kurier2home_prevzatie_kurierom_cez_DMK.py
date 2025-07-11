@@ -78,7 +78,7 @@ def test_prijatie_zasielky_kurierom(page: Page, vytvor_objednavku: str) -> None:
     page.get_by_role("button", name="Customer_blackred_pos_rgb").click()
     page.get_by_role("menuitem", name="Nastavenie").click()
     page.get_by_role("button", name="Príjem zásielky").click()
-    page.get_by_label("").fill(parcel_number)  # uprav na lepší selector ale asi lepsi nie je
+    page.get_by_label("").fill(parcel_number)  # uprav na lepší selector ale asi lepší nie je
     page.get_by_role("button", name="Hľadať zásielku").click()
     page.get_by_role("radio", name="Hotovosť").check()
     page.get_by_role("button", name="Zásielka uhradená").click()
