@@ -1,68 +1,48 @@
-**Ako rozbehať Playwright s pytestom.**
--
+# ✅ Ako rozbehať Playwright s Pytestom
 
-**Čo potrebujeme**
+## 🧰 Čo budeš potrebovať
 
+### 1. Python (verzia aspoň 3.8)
 
-Python (aspoň 3.8)
-- Prejdi na stránku https://www.python.org/downloads/ a stiahni inštalačku
-- Nainstaluj si python (Nezabudni urobiť add Python to PATH)
+- Stiahni a nainštaluj z: [https://www.python.org/downloads/](https://www.python.org/downloads/)
+- **Dôležité:** Zaškrtni možnosť `Add Python to PATH` počas inštalácie
 
-Pycharm (PyCharm Community Edition)
+### 2. PyCharm (Community Edition stačí)
 
-- Prejdi na stránku https://www.jetbrains.com/pycharm/download/?section=windows a stiahni si správnu verziu
-- Nainštaluj si Pycharm
-
-V Pycharme si vytvor nový projekt (stiahni tento z GitLabu)
-návody nájdeš na internete, alebo ti pomože Kolega/AI.
-Tento link ti pomôže začať: https://playwright.dev/python/docs/intro
-
-Pred začatím spúštania testov je potrebné lokálne skopírovať a premenovať súbor .env.
-
-- Pridaj si repozitár do Pycharmu
-
-git clone https://gitlab.bootiq.io/automatizovane-testy/dpd-mk.git
-
-- cd.. cesta do Projektu
-- python -m venv .venv (vytvori nove virtualne prostredie)
-- .venv\Scripts\activate (aktivuje ho)
-- playwright install (nainstaluj playwright)
-- Prejdi do nastaveni Pycharmu>Project interpreter>add interpreter>Pridat existujúci>vyber .venv/Scripts/python.exe
-
-**DEBUGING**
-
-- $Env:PWDEBUG = 1; pytest -s .\nazov_testu.py
-
-**VYTVÁRANIE TESTOV**
-
-- playwright codegen https://www.priklad.sk
-
-
-# Kompletný návod na nastavenie Playwright + pytest + dotenv v Pythone
+- Stiahni a nainštaluj z: [https://www.jetbrains.com/pycharm/download/](https://www.jetbrains.com/pycharm/download/)
 
 ---
 
-## 1. Vytvor si nový projekt alebo použij existujúci
+## ⚙️ Nastavenie projektu
 
-Urob si adresár pre projekt, napríklad `PlaywrightProject`.
+### Možnosť A: Vytvorenie nového projektu
 
----
+- Spusti PyCharm → `File > New Project`
 
-## 2. Vytvor a aktivuj virtuálne prostredie (voliteľné, ale odporúčané)
+### Možnosť B: Klonovanie existujúceho projektu
 
 ```bash
-python -m venv .venv
-# Aktivácia Windows (PowerShell)
-.\.venv\Scripts\Activate.ps1
-# alebo Windows (cmd)
-.\.venv\Scripts\activate.bat
-# alebo Linux / macOS
-source .venv/bin/activate
+git clone https://gitlab.bootiq.io/automatizovane-testy/dpd-mk.git
+```
+
+- Otvor projekt v PyCharme cez `File > Open`
+
+---
+
+## 📦 Príprava virtuálneho prostredia
+
+V koreňovom priečinku projektu spusti:
+
+```bash
+python -m venv .venv           # Vytvorenie virtuálneho prostredia
+.venv\Scripts\activate         # Aktivácia prostredia (Windows)
 ```
 
 ---
 
-## 3. Vytvor súbor `requirements.txt` s týmto obsahom:
+## 📄 Vytvorenie requirements.txt
+
+Ak ešte nemáš, vytvor súbor `requirements.txt` s týmto obsahom:
 
 ```
 pytest
@@ -73,26 +53,70 @@ playwright
 
 ---
 
-## 4. Nainštaluj všetky potrebné balíky:
+## 📥 Inštalácia balíkov a prehliadačov
 
-```
+```bash
 pip install -r requirements.txt
-pip install pytest-playwright
-```
-
----
-
-## 5. Spusti inštaláciu Playwright prehliadačov:
-
-```
 playwright install
 ```
 
-Tento príkaz stiahne potrebné prehliadače (Chromium, Firefox, WebKit).
+Týmto nainštaluješ všetky potrebné balíky a prehliadače (Chromium, Firefox, WebKit).
 
 ---
 
-## 6. Vytvor súbor `pytest.ini` v koreňovom adresári projektu (teda tam, kde je aj `requirements.txt`):
+### Nastavenie interpretera v PyCharme
+
+- `File > Settings > Project: <tvoj-projekt> > Python Interpreter`
+- Klikni na ⚙️ → `Add` → `Existing environment`
+- Vyber `.venv/Scripts/python.exe`
+
+---
+
+## 🔐 Príprava `.env` súboru
+
+- V koreňovom priečinku vytvor kópiu súboru `.env.example`
+- Premenuj ho na `.env`
+- Doplň potrebné hodnoty ako prihlasovacie údaje alebo API kľúče
+
+---
+
+## 🐞 Debugovanie testov
+
+Pre krokovanie testov pomocou Playwright debug módu:
+
+```powershell
+$Env:PWDEBUG=1; pytest -s .\nazov_testu.py
+```
+
+---
+
+## ✍️ Generovanie testov pomocou codegen
+
+Na rýchle vytvorenie testov pomocou GUI nahrávania:
+
+```bash
+playwright codegen https://www.priklad.sk
+```
+
+---
+
+## 🧪 Spúšťanie testov
+
+Spusti všetky testy v projekte príkazom:
+
+```bash
+pytest
+```
+
+Alebo ak chceš spustiť testy viditeľne (headed mód):
+
+```bash
+pytest --headed
+```
+
+---
+
+## 🧾 Príklad súboru `pytest.ini`
 
 ```ini
 [pytest]
@@ -100,77 +124,35 @@ addopts = -v
 testpaths = Tests
 ```
 
-Týmto nastavíš, že pytest bude hľadať testy v priečinku `Tests`.
-
 ---
 
-## 7. Priprav si `.env` súbor v koreňovom adresári (nepíš ho do repozitára, môže obsahovať citlivé údaje):
-
-Príklad `.env`:
+## 📁 Štruktúra projektu (príklad)
 
 ```
-CISLO_KARTY=1234123412341234
-PLATNOST_KARTY=12/25
-CVV_KARTY=123
-```
-
----
-
-## 8. Vytvor adresár `Tests` a doň umiestni svoj test, napríklad `Tests/test_objednavka.py`:
-
-```python
-import os
-from dotenv import load_dotenv
-import pytest
-from playwright.sync_api import Page
-
-# Načítanie .env súboru raz na začiatku testov
-load_dotenv()
-
-cisloKarty = os.getenv("CISLO_KARTY")
-platnost = os.getenv("PLATNOST_KARTY")
-cvv = os.getenv("CVV_KARTY")
-
-@pytest.fixture
-def vytvor_objednavku(page: Page) -> str:
-    # Tu ide tvoj testovací kód, kde používaš "page"
-    page.goto("https://twww.dpdmojkurier.sk/")
-    # ... (tvoj test)
-    # na konci return parcel_number
-    return "test_parcel_number"
-
-def test_prijatie_zasielky_kurierom(page: Page, vytvor_objednavku: str):
-    parcel_number = vytvor_objednavku
-    page.goto("https://twww.dpdmojkurier.sk/")
-    # ... ďalšie kroky testu
-    assert parcel_number is not None
+projekt/
+├── .venv/
+├── .env
+├── requirements.txt
+├── pytest.ini
+├── Tests/
+│   └── test_nazov.py
+└── README.md
 ```
 
 ---
 
-## 9. Spúšťaj testy z terminálu v koreňovom adresári projektu:
+## 📚 Užitočné odkazy
 
-```
-pytest Tests --headed
-```
-
-- Argument `--headed` znamená, že browser sa spustí **viditeľne** (nie v headless režime).
-- Ak chceš testy spustiť v tichom (headless) režime, `--headed` vynechaj.
+- Oficiálna dokumentácia Playwrightu (Python):  👉 [https://playwright.dev/python/docs/intro](https://playwright.dev/python/docs/intro)
 
 ---
 
-## 10. Používanie testov v PyCharm
-
-- Nastav **Test runner** na `pytest` v nastaveniach PyCharm.
-- V konfigurácii testu pridaj do argumentov `--headed` ak chceš vidieť browser.
-- Uisti sa, že používaš správne virtuálne prostredie, kde máš nainštalované balíky.
-
----
-
-## Doplnkové rady
+## 🧠 Tipy a rady
 
 - **Nikdy nezdieľaj `.env` súbor s citlivými údajmi verejne.**
-- Namiesto `page.wait_for_timeout(...)` používaj radšej explicitné čakacie metódy ako `page.wait_for_selector(...)`, aby boli testy stabilnejšie.
-- Ak chceš mať vlastné nastavenie browsera (napríklad headless/ headed), môžeš si vytvoriť `conftest.py` s vlastnou fixture.
-
-
+- Namiesto `page.wait_for_timeout(...)` používaj radšej `page.wait_for_selector(...)`.
+- Ak sa testy nespúšťajú (`Empty suite`), skontroluj:
+  - Máš testy vo foldri `Tests`?
+  - Sú testy pomenované `test_*.py`?
+  - Máš správne nastavený `pytest.ini`?
+- Môžeš si vytvoriť `conftest.py` pre vlastné fixture alebo konfiguráciu Playwrightu.
