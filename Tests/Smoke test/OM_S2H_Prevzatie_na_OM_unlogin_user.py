@@ -1,12 +1,13 @@
+# TC odoslanie balíka S2H OM a prevzatie balika cez DMK na OM.Unlogin user. Payment method cash.
+
 import re
-
-from playwright.sync_api import Page, expect
-
+from playwright.sync_api import Playwright, expect, Page
 
 
-# Tento test odosle objednavku z OM na OM - OM2_OM_prevzatie_do_OM_CASH_cez_DMK_test.py (Platba pri prevzati)
-
-def test_om2om_(page: Page) -> None:
+def run(playwright: Playwright) -> None:
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context()
+    page = context.new_page()
 
     # Open page DPDmojkurier.sk
     page.goto("https://twww.dpdmojkurier.sk/")
@@ -14,37 +15,51 @@ def test_om2om_(page: Page) -> None:
     # Prijatie cookies
     page.get_by_role("button", name="Prijať všetko").click()
 
-    # Vytvorenie bjednavky na OM DPD Bratislava (Sender)
+    # Vyber prepravy
     page.get_by_role("link", name="Poslať zásielku").first.click()
     page.get_by_role("button", name="Pokračovať").first.click()
-    page.get_by_role("textbox", name="Meno").fill("Erik")
-    page.get_by_role("textbox", name="Priezvisko").fill("Valigurský")
-    page.get_by_role("textbox", name="Email").fill("erik.valigursky@bootiq.io")
-    page.get_by_role("textbox", name="Telefón").fill("+421948328484")
-    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Bratislava")
-    page.get_by_role("menuitem", name="Bratislava Devín -").click()
-    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").nth(1).click()
+
+    # Vytvorenie bjednavky na OM DPD Bratislava (Sender)
+    page.get_by_role("textbox", name="Meno").click()
+    page.get_by_role("textbox", name="Meno").fill("Lucia")
+    page.get_by_role("textbox", name="Priezvisko").click()
+    page.get_by_role("textbox", name="Priezvisko").fill("Piesova")
+    page.get_by_role("textbox", name="Email").click()
+    page.get_by_role("textbox", name="Email").fill("lucia.piesova@bootiq.io")
+    page.get_by_role("textbox", name="Telefón").click()
+    page.get_by_role("textbox", name="Telefón").fill("+421918304547")
+    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.click()
+    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Svaty")
+    page.get_by_role("menuitem", name="Svätý Jur -").click()
     page.get_by_role("textbox", name="Ulica").click()
-    page.get_by_role("textbox", name="Ulica").fill("Ulica")
-    page.get_by_role("textbox", name="Popisné číslo").fill("1")
-    page.get_by_text("Pobočka DPD BRATISLAVA").click()
+    page.get_by_role("textbox", name="Ulica").fill("1.maja")
+    page.get_by_role("textbox", name="Popisné číslo").click()
+    page.get_by_role("textbox", name="Popisné číslo").fill("22")
+    page.get_by_role("textbox", name="Zadajte mesto").click()
+    page.get_by_role("textbox", name="Zadajte mesto").fill("82104")
+    page.get_by_role("menuitem", name="Bratislava").click()
+    page.get_by_role("cell", name="Pobočka DPD BRATISLAVA Pri").click()
     page.get_by_role("checkbox", name="Prosím, pre ďalší krok a").check()
     page.get_by_role("button", name="Pokračovať").click()
     page.wait_for_timeout(timeout=2000)
 
     # Vytvorenie bjednavky na OM DPD Bratislava (Reciever)
-    page.get_by_role("textbox", name="Meno").click()
-    page.get_by_role("textbox", name="Meno").fill("Test")
-    page.get_by_role("textbox", name="Priezvisko").fill("Test")
-    page.get_by_role("textbox", name="Email").fill("email@email.com")
-    page.get_by_role("textbox", name="Telefón").fill("+421948328484")
     page.get_by_role("checkbox", name="Poslať na adresu Poslať do").uncheck()
-    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.click()
-    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Košice")
-    page.get_by_role("menuitem", name="Košice - 04001").click()
+    page.get_by_role("textbox", name="Meno").click()
+    page.get_by_role("textbox", name="Meno").fill("Peter")
+    page.get_by_role("textbox", name="Priezvisko").click()
+    page.get_by_role("textbox", name="Priezvisko").fill("Kocian")
+    page.get_by_role("textbox", name="Email").click()
+    page.get_by_role("textbox", name="Email").fill("lucia.piesova+recipient@bootiq.io")
+    page.get_by_role("textbox", name="Telefón").click()
+    page.get_by_role("textbox", name="Telefón").fill("+421918304547")
+    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").nth(1).click()
+    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").nth(1).fill("83102")
+    page.get_by_text("Bratislava Nové Mesto").click()
     page.get_by_role("textbox", name="Ulica").click()
-    page.get_by_role("textbox", name="Ulica").fill("Ulica")
-    page.get_by_role("textbox", name="Popisné číslo").fill("1")
+    page.get_by_role("textbox", name="Ulica").fill("Racianska")
+    page.get_by_role("textbox", name="Popisné číslo").click()
+    page.get_by_role("textbox", name="Popisné číslo").fill("66")
     page.get_by_role("button", name="Pokračovať").click()
     page.wait_for_timeout(timeout=2000)
 
@@ -52,16 +67,19 @@ def test_om2om_(page: Page) -> None:
     page.get_by_role("img", name="add-parcel-icon").click()
     page.locator("div").filter(has_text=re.compile(r"^váha:do 5 kgdĺžka:55 cmšírka:45 cmvýška:20 cmPridať$")).get_by_role("button").click()
     page.get_by_role("button", name="Pokračovať").click()
+
+    # Kosik
     page.get_by_role("checkbox", name="Prepravný štítok Digitálny").uncheck()
     page.get_by_role("button", name="Pokračovať na výber platby").click()
-    page.get_by_text("Platba na odbernom mieste DPD").click()
+
+    # Vyber sposobu platby
     page.get_by_role("radio", name="Platba na odbernom mieste DPD").check()
     page.get_by_role("button", name="Potvrdiť objednávku").click()
 
+    # Vytvorenie objednavky / Thank you page
+    page.goto("https://twww.dpdmojkurier.sk/order/confirm")
 
-
-
-# Prijatie balika cez OM v CashApp
+    # Prijatie balika cez OM v CashApp
 def test_login_prijatie_balika(page: Page) -> None:
     page.goto("https://twww.dpdmojkurier.sk")  # Prejdite na URL
     # Prijat cookies
@@ -110,9 +128,8 @@ def test_login_prijatie_balika(page: Page) -> None:
     page.locator("#parcelNumber").fill(text)
     page.locator("#serviceCode").fill("650")
     page.get_by_role("button", name="Hľadať zásielku").click()
-    page.get_by_role("radio", name="Hotovosť").check()
+    page.get_by_role("radio", name="Platobná brána").check()
     page.get_by_role("button", name="Zásielka uhradená").click()
 
     # Očakáva nadpis "Úspešne odoslané"
     expect(page.get_by_role("heading", name="Úspešne odoslané")).to_be_visible()
-
