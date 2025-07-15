@@ -14,7 +14,7 @@ cvv = os.getenv("CVV_KARTY")
 
 # Objednavka na zvoz Kurierom
 @pytest.fixture
-def vytvor_objednavku(page: Page) -> str:
+def test_vytvor_objednavku(page: Page) -> str:
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
     page.get_by_role("link", name="Poslať zásielku").first.click()
@@ -73,8 +73,8 @@ def vytvor_objednavku(page: Page) -> str:
 
 
 
-def test_prijatie_zasielky_kurierom(page: Page, vytvor_objednavku: str) -> None:
-    parcel_number = vytvor_objednavku
+def test_prijatie_zasielky_kurierom(page: Page, test_vytvor_objednavku: str) -> None:
+    parcel_number = test_vytvor_objednavku
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("link", name="Prihlásenie").click()
     page.get_by_role("textbox", name="Login").fill("erik.valigursky+ku@bootiq.io")
@@ -90,6 +90,6 @@ def test_prijatie_zasielky_kurierom(page: Page, vytvor_objednavku: str) -> None:
     page.get_by_role("radio", name="Hotovosť").check()
     page.get_by_role("button", name="Zásielka uhradená").click()
     assert page.get_by_role("heading", name="Úspešne odoslané")
-    print(f"(✔️) Zásielka {parcel_number} bola prijatá do prepravy kuriérom")
+    print(f"(✅) Zásielka {parcel_number} bola prijatá do prepravy kuriérom")
 
 
