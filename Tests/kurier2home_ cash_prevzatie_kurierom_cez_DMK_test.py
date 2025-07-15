@@ -1,28 +1,28 @@
 import re
+import mysql.connector
 import pytest
 from playwright.sync_api import Page
 from dotenv import load_dotenv
 import os
-
-# Test objednavka zvoz kurierom, prebratie kurierom, platba pri prebrati
 
 # Načítanie údajov z .env
 load_dotenv()
 cisloKarty = os.getenv("CISLO_KARTY")
 platnost = os.getenv("PLATNOST_KARTY")
 cvv = os.getenv("CVV_KARTY")
-dbPassword = os.getenv(dbPassword)
+dbPassword = os.getenv("dbPassword")
 
-# Objednavka na zvoz Kurierom
+
+# Objednávka na zvoz kuriérom
 @pytest.fixture
-def test_vytvor_objednavku(page: Page) -> str:
+def test_vytvor_objednavku(page: Page):
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
     page.get_by_role("link", name="Poslať zásielku").first.click()
     page.get_by_role("button", name="Pokračovať").nth(1).click()
     page.wait_for_timeout(timeout=2000)
 
-    # Sender
+    # Odosielateľ
     page.get_by_role("textbox", name="Meno").fill("Erik")
     page.get_by_role("textbox", name="Priezvisko").fill("Valigurský")
     page.get_by_role("textbox", name="Email").fill("erik.valigursky@bootiq.sk")
@@ -35,7 +35,7 @@ def test_vytvor_objednavku(page: Page) -> str:
     page.get_by_role("button", name="Pokračovať").click()
     page.wait_for_timeout(timeout=2000)
 
-    # Reciever
+    # Príjemca
     page.get_by_role("textbox", name="Meno").fill("Test")
     page.get_by_role("textbox", name="Priezvisko").fill("Test")
     page.get_by_role("textbox", name="Email").fill("email@email.com")
@@ -47,31 +47,39 @@ def test_vytvor_objednavku(page: Page) -> str:
     page.get_by_role("button", name="Pokračovať").click()
     page.wait_for_timeout(timeout=2000)
 
-    # Balik
+    # Balík
     page.get_by_text("Pridať balík").click()
-    page.locator("div").filter(has_text=re.compile(r"^váha:do 5 kgdĺžka:55 cmšírka:45 cmvýška:20 cmPridať$")).get_by_role("button").click()
-    page.get_by_role("checkbox", name="Poslať dobierkový balík").check()
-    page.wait_for_timeout(timeout=2000)
-
-    # Dobierka
-    page.get_by_role("textbox", name="Dobierková suma").fill("1")
-    page.get_by_role("textbox", name="IBAN").fill("SK4075000000007777777777")
-    page.get_by_role("textbox", name="Variabilný symbol").fill("2221178")
+    page.locator("div").filter(
+        has_text=re.compile(r"^váha:do 5 kgdĺžka:55 cmšírka:45 cmvýška:20 cmPridať$")
+    ).get_by_role("button").click()
     page.get_by_role("button", name="Pokračovať").click()
     page.get_by_role("button", name="Pokračovať na výber platby").click()
-    page.get_by_role("radio", name="Platba pri vyzdvihnutí balíka").check()
+    page.get_by_role("button", name="Potvrdiť objednávku").click()
 
-    # Očakávaj odpoveď
-    with page.expect_response(lambda res: "api/cart/createOrder" in res.url and res.status == 200) as response_info:
-        page.get_by_role("button", name="Potvrdiť objednávku").click()
+    # Platobná brána
+    assert cisloKarty and platnost and cvv, "Chýbajú hodnoty z .env súboru!"
+    page.wait_for_url("https://moja.tatrabanka.sk/cgi-bin/e-commerce/start/cardpay")
+    page.get_by_role("textbox", name="Číslo karty").fill(cisloKarty)
+    page.get_by_role("textbox", name="Platnosť").fill(platnost)
+    page.get_by_role("textbox", name="CVV").fill(cvv)
+    page.get_by_role("button", name="ZAPLATIŤ").click()
+    page.wait_for_timeout(timeout=5000)
 
-    response = response_info.value
-    data = response.json()
-    parcel_number = data["o10_parcel_number"]
-    assert parcel_number is not None, "Chýba o10_parcel_number v odpovedi!"
+    # Získanie čísla balíka z DB
+    conn = mysql.connector.connect(
+        host="10.57.50.168",
+        port=3306,
+        database="cashapp_test",
+        user="cashapp",
+        password=dbPassword
+    )
+    cursor = conn.cursor()
+    cursor.execute("SELECT o10_parcel_number FROM o10_parcel ORDER BY o01_order_id DESC LIMIT 1;")
+    parcel_number = cursor.fetchone()[0]
+    cursor.close()
+    conn.close()
     print(f"(✅) Zásielka {parcel_number} na zvoz kuriérom bola vytvorená")
     return parcel_number
-
 
 
 def test_prijatie_zasielky_kurierom(page: Page, test_vytvor_objednavku: str) -> None:
@@ -86,11 +94,9 @@ def test_prijatie_zasielky_kurierom(page: Page, test_vytvor_objednavku: str) -> 
     page.get_by_role("button", name="Customer_blackred_pos_rgb").click()
     page.get_by_role("menuitem", name="Nastavenie").click()
     page.get_by_role("button", name="Príjem zásielky").click()
-    page.get_by_label("").fill(parcel_number)  # uprav na lepší selector ale asi lepsi nie je
+    page.get_by_label("").fill(parcel_number)
     page.get_by_role("button", name="Hľadať zásielku").click()
     page.get_by_role("radio", name="Hotovosť").check()
     page.get_by_role("button", name="Zásielka uhradená").click()
     assert page.get_by_role("heading", name="Úspešne odoslané")
     print(f"(✅) Zásielka {parcel_number} bola prijatá do prepravy kuriérom")
-
-
