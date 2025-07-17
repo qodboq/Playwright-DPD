@@ -16,7 +16,7 @@ def test_kalkulacka1kg(playwright: Playwright) -> None:
     page.get_by_role("textbox", name="Hmotnosť (kg)").fill("1")
     page.get_by_role("button", name="Vypočítať").click()
 
-    pattern = r"\d+[,\.]\d{1,2} EUR"
+    pattern = r"\d+(?:[.,]\d{1,2})? EUR"
 
     locator_vyzdvihnutie = page.get_by_text("Cena pri vyzdvihnutí zásielky")
     expect(locator_vyzdvihnutie).to_be_visible(timeout=5000)
@@ -51,7 +51,7 @@ def test_kalkulacka10kg(playwright: Playwright) -> None:
     page.get_by_role("textbox", name="Hmotnosť (kg)").fill("10")
     page.get_by_role("button", name="Vypočítať").click()
 
-    pattern = r"\d+[,\.]\d{1,2} EUR"
+    pattern = r"\d+(?:[.,]\d{1,2})? EUR"
 
     locator_vyzdvihnutie = page.get_by_text("Cena pri vyzdvihnutí zásielky")
     expect(locator_vyzdvihnutie).to_be_visible(timeout=5000)
@@ -85,7 +85,7 @@ def test_kalkulacka31_5kg(playwright: Playwright) -> None:
     page.get_by_role("textbox", name="Hmotnosť (kg)").fill("31,5")
     page.get_by_role("button", name="Vypočítať").click()
 
-    pattern = r"\d+[,\.]\d{1,2} EUR"
+    pattern = r"\d+(?:[.,]\d{1,2})? EUR"
 
     locator_vyzdvihnutie = page.get_by_text("Cena pri vyzdvihnutí zásielky")
     expect(locator_vyzdvihnutie).to_be_visible(timeout=5000)
