@@ -1,4 +1,3 @@
-
 import time
 from playwright.sync_api import Playwright, expect
 
@@ -9,8 +8,8 @@ def generate_email() -> str:
     return f"erik.valigursky+{timestamp}@bootiq.sk"
 
 # Registracia firemneho zakaznika
-def test_registracia_client_bussines(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
+def test_registracia_client_bussines(pw: Playwright) -> None:
+    browser = pw.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
     page.goto("https://twww.dpdmojkurier.sk/")
@@ -37,4 +36,3 @@ def test_registracia_client_bussines(playwright: Playwright) -> None:
     # ---------------------
     context.close()
     browser.close()
-

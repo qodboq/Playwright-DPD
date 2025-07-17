@@ -1,5 +1,5 @@
 import re
-from playwright.sync_api import Playwright, sync_playwright, expect
+from playwright.sync_api import Playwright, expect
 
 def test_kalkulacka1kg(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
@@ -104,7 +104,3 @@ def test_kalkulacka31_5kg(playwright: Playwright) -> None:
     context.close()
     browser.close()
 
-with sync_playwright() as pw:
-    test_kalkulacka1kg(pw)
-    test_kalkulacka10kg(pw)
-    test_kalkulacka31_5kg(pw)

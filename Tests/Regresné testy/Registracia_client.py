@@ -8,8 +8,8 @@ def generate_email() -> str:
     return f"erik.valigursky+{timestamp}@bootiq.sk"
 
 # Registracia zakaznika
-def test_registracia_client(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
+def test_registracia_client(pw: Playwright) -> None:
+    browser = pw.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
     page.goto("https://twww.dpdmojkurier.sk/")
