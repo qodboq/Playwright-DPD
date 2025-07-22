@@ -1,10 +1,8 @@
 import re
-from playwright.sync_api import Playwright, expect
+from playwright.sync_api import expect
 
-def test_kalkulacka1kg(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+def test_kalkulacka1kg(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
 
@@ -30,14 +28,10 @@ def test_kalkulacka1kg(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní 1kg zásielky má hodnotu: {match.group(0)}")
 
-    context.close()
-    browser.close()
 
 
-def test_kalkulacka10kg(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+def test_kalkulacka10kg(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
 
@@ -63,13 +57,9 @@ def test_kalkulacka10kg(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní 10kg zásielky má hodnotu: {match.group(0)}")
 
-    context.close()
-    browser.close()
 
-def test_kalkulacka31_5kg(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+def test_kalkulacka31_5kg(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
 
@@ -95,13 +85,10 @@ def test_kalkulacka31_5kg(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní 31,5kg zásielky má hodnotu: {match.group(0)}")
 
-    context.close()
-    browser.close()
 
-def test_kalkulacka_hranicna_hodnota_min(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+
+def test_kalkulacka_hranicna_hodnota_min(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
 
@@ -127,13 +114,10 @@ def test_kalkulacka_hranicna_hodnota_min(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní zásielky s minimálnou hraničnou hodnotou je: {match.group(0)}")
 
-    context.close()
-    browser.close()
 
-def test_kalkulacka_hranicna_hodnota_max(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+
+def test_kalkulacka_hranicna_hodnota_max(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
 
@@ -159,13 +143,10 @@ def test_kalkulacka_hranicna_hodnota_max(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní zásielky s maximálnou hraničnou hodnotou je: {match.group(0)}")
 
-    context.close()
-    browser.close()
 
-def test_kalkulacka_cz_zona1(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+
+def test_kalkulacka_cz_zona1(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
     page.get_by_role("combobox").select_option("CZ")
@@ -191,13 +172,10 @@ def test_kalkulacka_cz_zona1(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní CZ zásielky má hodnotu: {match.group(0)}")
 
-    context.close()
-    browser.close()
 
-def test_kalkulacka_at_zona2(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+
+def test_kalkulacka_at_zona2(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
     page.get_by_role("combobox").select_option("AT")
@@ -223,14 +201,11 @@ def test_kalkulacka_at_zona2(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní AT zásielky má hodnotu: {match.group(0)}")
 
-    context.close()
-    browser.close()
 
 
-def test_kalkulacka_fr_zona3(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+
+def test_kalkulacka_fr_zona3(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
     page.get_by_role("combobox").select_option("FR")
@@ -256,14 +231,11 @@ def test_kalkulacka_fr_zona3(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní FR zásielky má hodnotu: {match.group(0)}")
 
-    context.close()
-    browser.close()
 
 
-def test_kalkulacka_fi_zona4(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+
+def test_kalkulacka_fi_zona4(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
     page.get_by_role("combobox").select_option("FI")
@@ -289,14 +261,11 @@ def test_kalkulacka_fi_zona4(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní AT zásielky má hodnotu: {match.group(0)}")
 
-    context.close()
-    browser.close()
+
 
 # tento negativny scenar nefunguje
-def test_kalkulacka_negativny_scenar(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+def test_kalkulacka_negativny_scenar(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
 
@@ -313,5 +282,4 @@ def test_kalkulacka_negativny_scenar(playwright: Playwright) -> None:
     expect(page.locator("#weight-helper-text")).to_have_text("Hodnota musí byť reálne číslo")
     print(f"✅ Negativny scenar dopadol v dobre")
 
-    context.close()
-    browser.close()
+#------------------------END

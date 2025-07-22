@@ -8,10 +8,8 @@ def generate_email() -> str:
     return f"erik.valigursky+{timestamp}@bootiq.sk"
 
 # Registracia firemneho zakaznika
-def test_registracia_client_bussines(pw: Playwright) -> None:
-    browser = pw.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+def test_registracia_client_bussines(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
     page.get_by_role("link", name="Firemný zákazník").nth(1).click()

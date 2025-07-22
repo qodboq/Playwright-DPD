@@ -1,14 +1,25 @@
 import re
-from playwright.sync_api import Playwright, APIRequestContext, expect, Page
-from dotenv import load_dotenv
 import json
-import os
+from playwright.sync_api import Playwright, APIRequestContext, expect, Page
+from dotenv import load_dotenv; load_dotenv()
+from os import getenv
 
-# Načítanie údajov z .env
-load_dotenv()
-cisloKarty = os.getenv("CISLO_KARTY")
-platnost = os.getenv("PLATNOST_KARTY")
-cvv = os.getenv("CVV_KARTY")
+
+# Karta a DB a API
+cisloKarty, platnost, cvv, dbPassword, API_key = getenv("CISLO_KARTY"), getenv("PLATNOST_KARTY"), getenv("CVV_KARTY"), getenv("dbPassword"), getenv("API_key")
+
+
+# Sender
+sMeno, sPriezvisko, sEmail, sTel, sMesto, sPSC, sUlica, sPopisneCislo = (
+    getenv("sMeno"), getenv("sPriezvisko"), getenv("sEmail"), getenv("sTel"),
+    getenv("sMesto"), getenv("sPSC"), getenv("sUlica"), getenv("sPopisneCislo")
+)
+
+# Receiver
+rMeno, rPriezvisko, rEmail, rTel, rMesto, rPSC, rUlica, rPopisneCislo = (
+    getenv("rMeno"), getenv("rPriezvisko"), getenv("rEmail"), getenv("rTel"),
+    getenv("rMesto"), getenv("rPSC"), getenv("rUlica"), getenv("rPopisneCislo")
+)
 
 
 def get_order_id(page) -> str | None:
@@ -64,16 +75,15 @@ def test_l2h_cod_dpl(page: Page, playwright: Playwright) -> None:
         page.wait_for_timeout(timeout=2000)
 
         #Sender
-        page.get_by_role("textbox", name="Meno").fill("Erik")
-        page.get_by_role("textbox", name="Priezvisko").fill("Valigurský")
-        page.get_by_role("textbox", name="Email").fill("erik.valigursky@bootiq.io")
-        page.get_by_role("textbox", name="Telefón").fill("+421948328484")
-        page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Bratislava")
-        page.get_by_role("menuitem", name="Bratislava Devín -").click()
-        page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").nth(1).click()
-        page.get_by_role("textbox", name="Ulica").click()
-        page.get_by_role("textbox", name="Ulica").fill("Ulica")
-        page.get_by_role("textbox", name="Popisné číslo").fill("1")
+        #Sender
+        page.get_by_role("textbox", name="Meno").fill(sMeno)
+        page.get_by_role("textbox", name="Priezvisko").fill(sPriezvisko)
+        page.get_by_role("textbox", name="Email").fill(sEmail)
+        page.get_by_role("textbox", name="Telefón").fill(sTel)
+        page.locator("xpath=//label[normalize-space()='Mesto']/following::input[1]").fill(sMesto)
+        page.locator("xpath=//label[normalize-space()='PSČ']/following::input[1]").fill(sPSC)
+        page.get_by_role("textbox", name="Ulica").fill(sUlica)
+        page.get_by_role("textbox", name="Popisné číslo").fill(sPopisneCislo)
         page.get_by_text("Pobočka DPD BRATISLAVA").click()
         page.get_by_role("checkbox", name="Prosím, pre ďalší krok a").check()
         page.get_by_role("button", name="Pokračovať").click()
@@ -81,20 +91,21 @@ def test_l2h_cod_dpl(page: Page, playwright: Playwright) -> None:
 
         #Reciever
         page.get_by_role("textbox", name="Meno").clear()
-        page.get_by_role("textbox", name="Meno").fill("Test")
+        page.get_by_role("textbox", name="Meno").fill(rMeno)
         page.get_by_role("textbox", name="Priezvisko").clear()
-        page.get_by_role("textbox", name="Priezvisko").fill("Test")
-        page.get_by_role("textbox", name="Email").fill("email@email.com")
-        page.get_by_role("textbox", name="Telefón").fill("+421948328484")
+        page.get_by_role("textbox", name="Priezvisko").fill(rPriezvisko)
+        page.get_by_role("textbox", name="Email").fill(rEmail)
+        page.get_by_role("textbox", name="Telefón").fill(rTel)
 
         #poslat na domacu adresu
         page.get_by_role("checkbox", name="Poslať na adresu Poslať do").uncheck()
-        page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Poprad")
-        page.get_by_role("menuitem", name="Poprad -").click()
-        page.get_by_role("textbox", name="Ulica").fill("Ulica")
-        page.get_by_role("textbox", name="Popisné číslo").fill("1")
-        page.get_by_role("button", name="Pokračovať").click()
+        page.locator("xpath=//label[normalize-space()='Mesto']/following::input[1]").fill(rMesto)
+        page.locator("xpath=//label[normalize-space()='PSČ']/following::input[1]").fill(rPSC)
+        page.get_by_role("textbox", name="Ulica").fill(rUlica)
+        page.get_by_role("textbox", name="Popisné číslo").fill(rPopisneCislo)
+        page.get_by_role("textbox", name="Popisné číslo").click()
         page.wait_for_timeout(timeout=2000)
+        page.get_by_role("button", name="Pokračovať").click()
 
         # Package
         page.get_by_role("img", name="add-parcel-icon").click()
@@ -129,7 +140,7 @@ def test_l2h_cod_dpl(page: Page, playwright: Playwright) -> None:
 
         # --- API volanie cez Playwright ---
         request_context = playwright.request.new_context()
-        api_key = "21c24472-ivua-2590-jluw-6b4dee64ddaa"
+        api_key = API_key
         data = {
             "state": "RECEIVED",
             "pudoCode": "SK20271"

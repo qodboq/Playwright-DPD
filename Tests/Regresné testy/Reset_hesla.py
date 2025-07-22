@@ -1,11 +1,9 @@
-from playwright.sync_api import Playwright, expect
+from playwright.sync_api import expect
 
 # Test na resetovanie hesla (skontroluj ci ti prisiel mail)
 
-def test_reset_hesla(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+def test_reset_hesla(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
     page.get_by_role("link", name="Prihlásenie").click()
@@ -16,8 +14,7 @@ def test_reset_hesla(playwright: Playwright) -> None:
     expect(page.get_by_text("Na email erik.valigursky+")).to_be_visible()
     print("✅ Email na resetovanie hesla sa uspesne odoslal.")
     # ---------------------
-    context.close()
-    browser.close()
+
 
 
 

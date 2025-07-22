@@ -1,16 +1,28 @@
 import re
 import pytest
 from playwright.sync_api import Page
-from dotenv import load_dotenv
-import os
+from dotenv import load_dotenv; load_dotenv()
+from os import getenv
 
 # Test objednavka zvoz kurierom, prebratie kurierom, platba pri prebrati
 
-# Načítanie údajov z .env
-load_dotenv()
-cisloKarty = os.getenv("CISLO_KARTY")
-platnost = os.getenv("PLATNOST_KARTY")
-cvv = os.getenv("CVV_KARTY")
+# Karta a DB
+cisloKarty, platnost, cvv, dbPassword = getenv("CISLO_KARTY"), getenv("PLATNOST_KARTY"), getenv("CVV_KARTY"), getenv("dbPassword")
+
+# Sender
+sMeno, sPriezvisko, sEmail, sTel, sMesto, sPSC, sUlica, sPopisneCislo = (
+    getenv("sMeno"), getenv("sPriezvisko"), getenv("sEmail"), getenv("sTel"),
+    getenv("sMesto"), getenv("sPSC"), getenv("sUlica"), getenv("sPopisneCislo")
+)
+
+# Receiver
+rMeno, rPriezvisko, rEmail, rTel, rMesto, rPSC, rUlica, rPopisneCislo = (
+    getenv("rMeno"), getenv("rPriezvisko"), getenv("rEmail"), getenv("rTel"),
+    getenv("rMesto"), getenv("rPSC"), getenv("rUlica"), getenv("rPopisneCislo")
+)
+
+# Login kuriér
+kLogin, kPassword = getenv("kLogin"), getenv("kPassword")
 
 # Objednavka na zvoz Kurierom
 @pytest.fixture
@@ -22,27 +34,28 @@ def test_vytvor_objednavku(page: Page) -> str:
     page.wait_for_timeout(timeout=2000)
 
     # Sender
-    page.get_by_role("textbox", name="Meno").fill("Erik")
-    page.get_by_role("textbox", name="Priezvisko").fill("Valigurský")
-    page.get_by_role("textbox", name="Email").fill("erik.valigursky@bootiq.sk")
-    page.get_by_role("textbox", name="Telefón").fill("+421948328484")
-    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Opoj")
-    page.get_by_role("menuitem", name="Opoj -").click()
-    page.get_by_role("textbox", name="Ulica").fill("Opoj")
-    page.get_by_role("textbox", name="Popisné číslo").fill("108")
+    page.get_by_role("textbox", name="Meno").fill(sMeno)
+    page.get_by_role("textbox", name="Priezvisko").fill(sPriezvisko)
+    page.get_by_role("textbox", name="Email").fill(sEmail)
+    page.get_by_role("textbox", name="Telefón").fill(sTel)
+    page.locator("xpath=//label[normalize-space()='Mesto']/following::input[1]").fill(sMesto)
+    page.locator("xpath=//label[normalize-space()='PSČ']/following::input[1]").fill(sPSC)
+    page.get_by_role("textbox", name="Ulica").fill(sUlica)
+    page.get_by_role("textbox", name="Popisné číslo").fill(sPopisneCislo)
     page.get_by_role("checkbox", name="Prosím, pre ďalší krok a").check()
     page.get_by_role("button", name="Pokračovať").click()
     page.wait_for_timeout(timeout=2000)
 
     # Reciever
-    page.get_by_role("textbox", name="Meno").fill("Test")
-    page.get_by_role("textbox", name="Priezvisko").fill("Test")
-    page.get_by_role("textbox", name="Email").fill("email@email.com")
-    page.get_by_role("textbox", name="Telefón").fill("+421123123123")
-    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Poprad")
-    page.get_by_role("menuitem", name="Poprad -").click()
-    page.get_by_role("textbox", name="Ulica").fill("Ulica")
-    page.get_by_role("textbox", name="Popisné číslo").fill("1")
+    page.get_by_role("textbox", name="Meno").fill(rMeno)
+    page.get_by_role("textbox", name="Priezvisko").fill(rPriezvisko)
+    page.get_by_role("textbox", name="Email").fill(rEmail)
+    page.get_by_role("textbox", name="Telefón").fill(rTel)
+    page.locator("xpath=//label[normalize-space()='Mesto']/following::input[1]").fill(rMesto)
+    page.locator("xpath=//label[normalize-space()='PSČ']/following::input[1]").fill(rPSC)
+    page.get_by_role("textbox", name="Ulica").fill(rUlica)
+    page.get_by_role("textbox", name="Popisné číslo").fill(rPopisneCislo)
+    page.get_by_role("textbox", name="Popisné číslo").click()
     page.get_by_role("button", name="Pokračovať").click()
     page.wait_for_timeout(timeout=2000)
 
@@ -70,15 +83,15 @@ def test_prijatie_zasielky_kurierom(page: Page, test_vytvor_objednavku: str) -> 
     parcel_number = test_vytvor_objednavku
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("link", name="Prihlásenie").click()
-    page.get_by_role("textbox", name="Login").fill("erik.valigursky+ku@bootiq.io")
-    page.locator("#password").fill("123123")
+    page.get_by_role("textbox", name="Login").fill(kLogin)
+    page.locator("#password").fill(kPassword)
     page.locator("#password").press("Enter")
 
     # Príjem zásielky
     page.get_by_role("button", name="Customer_blackred_pos_rgb").click()
     page.get_by_role("menuitem", name="Nastavenie").click()
     page.get_by_role("button", name="Príjem zásielky").click()
-    page.get_by_label("").fill(parcel_number)  # uprav na lepší selector ale asi lepší nie je
+    page.get_by_label("").fill(parcel_number)
     page.get_by_role("button", name="Hľadať zásielku").click()
     page.get_by_role("radio", name="Hotovosť").check()
     page.get_by_role("button", name="Zásielka uhradená").click()

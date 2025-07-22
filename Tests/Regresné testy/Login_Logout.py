@@ -1,20 +1,27 @@
-from playwright.sync_api import Playwright, expect
+from playwright.sync_api import expect
+from dotenv import load_dotenv; load_dotenv()
+from os import getenv
+
+# Login kuriér
+kLogin, kPassword = getenv("kLogin"), getenv("kPassword")
+# Login sukromna osoba
+sLogin, sPassword = getenv("sLogin"), getenv("sPassword")
+# Login firemny zakaznik
+fLogin, fPassword = getenv("fLogin"), getenv("fPassword")
 
 # Test na prihlasenie a odhlasenie Kurier, Sukromna osoba, Firma
 
-def test_login_logout(pw: Playwright) -> None:
-    browser = pw.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+def test_login_logout(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
 
     # Login/Logout kurier
     page.get_by_role("link", name="Prihlásenie").click()
     page.get_by_role("textbox", name="Login").click()
-    page.get_by_role("textbox", name="Login").fill("erik.valigursky+ku@bootiq.io")
+    page.get_by_role("textbox", name="Login").fill(kLogin)
     page.locator("#password").click()
-    page.locator("#password").fill("123123")
+    page.locator("#password").fill(kPassword)
     page.get_by_role("button", name="Prihlásenie").click()
     expect(page.get_by_text("Erik Valigursky+Kurier|")).to_be_visible()
     page.get_by_role("button", name="Customer_blackred_pos_rgb").click()
@@ -24,9 +31,9 @@ def test_login_logout(pw: Playwright) -> None:
     # Login/Logout sukromna osoba
     page.get_by_role("link", name="Prihlásenie").click()
     page.get_by_role("textbox", name="Login").click()
-    page.get_by_role("textbox", name="Login").fill("erik.valigursky+test5@bootiq.io")
+    page.get_by_role("textbox", name="Login").fill(sLogin)
     page.locator("#password").click()
-    page.locator("#password").fill("123123")
+    page.locator("#password").fill(sPassword)
     page.get_by_role("button", name="Prihlásenie").click()
     expect(page.get_by_text("Súkromný zákazník Erik erik.")).to_be_visible()
     page.get_by_role("button", name="Customer_blackred_pos_rgb").click()
@@ -36,9 +43,9 @@ def test_login_logout(pw: Playwright) -> None:
     # Login/Logout firemny zakaznik
     page.get_by_role("link", name="Prihlásenie").click()
     page.get_by_role("textbox", name="Login").click()
-    page.get_by_role("textbox", name="Login").fill("erik.valigursky+b11@bootiq.io")
+    page.get_by_role("textbox", name="Login").fill(fLogin)
     page.locator("#password").click()
-    page.locator("#password").fill("123123")
+    page.locator("#password").fill(fPassword)
     page.get_by_role("button", name="Prihlásenie").click()
     expect(page.get_by_text("Firemný zákazník Erik")).to_be_visible()
     page.get_by_role("button", name="Customer_blackred_pos_rgb").click()
@@ -47,5 +54,3 @@ def test_login_logout(pw: Playwright) -> None:
     print("✅ Testy Login/Logout prebehli úspešne.")
 
     # ---------------------
-    context.close()
-    browser.close()

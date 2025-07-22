@@ -1,10 +1,8 @@
 import re
-from playwright.sync_api import Playwright, expect
+from playwright.sync_api import expect
 
-def test_kalkulacka1kg(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+def test_kalkulacka1kg(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
 
@@ -32,14 +30,10 @@ def test_kalkulacka1kg(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní 1kg zásielky má správny formát: {match.group(0)}")
 
-    context.close()
-    browser.close()
 
 
-def test_kalkulacka10kg(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+def test_kalkulacka10kg(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
 
@@ -67,13 +61,9 @@ def test_kalkulacka10kg(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní 10kg zásielky má správny formát: {match.group(0)}")
 
-    context.close()
-    browser.close()
 
-def test_kalkulacka31_5kg(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+def test_kalkulacka31_5kg(page) -> None:
+
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
 
@@ -101,6 +91,5 @@ def test_kalkulacka31_5kg(playwright: Playwright) -> None:
     assert match is not None, f"Cena pri odoslaní zásielky nemá očakávaný formát: {text_odoslanie}"
     print(f"✅ Cena pri odoslaní 31,5kg zásielky má správny formát: {match.group(0)}")
 
-    context.close()
-    browser.close()
+#-------------------END
 
