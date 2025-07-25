@@ -4,6 +4,7 @@ import pytest
 from playwright.sync_api import Page
 from dotenv import load_dotenv; load_dotenv()
 from os import getenv
+import pymysql
 
 # Karta a DB
 cisloKarty, platnost, cvv, dbPassword = getenv("CISLO_KARTY"), getenv("PLATNOST_KARTY"), getenv("CVV_KARTY"), getenv("dbPassword")
@@ -26,7 +27,7 @@ kLogin, kPassword = getenv("kLogin"), getenv("kPassword")
 
 # Objednávka na zvoz kuriérom
 @pytest.fixture
-def test_vytvor_objednavku(page: Page)->str:
+def test_vytvor_objednavku(page: Page)->None:
     page.goto("https://twww.dpdmojkurier.sk/")
     page.get_by_role("button", name="Prijať všetko").click()
     page.get_by_role("link", name="Poslať zásielku").first.click()
@@ -78,18 +79,36 @@ def test_vytvor_objednavku(page: Page)->str:
     page.wait_for_timeout(timeout=5000)
 
     # Získanie čísla balíka z DB
-    conn = mysql.connector.connect(
+    # conn = mysql.connector.connect(
+    #     host="10.57.50.168",
+    #     port=3306,
+    #     database="cashapp_test",
+    #     user="cashapp",
+    #     password=dbPassword
+    # )
+    # cursor = conn.cursor()
+    # cursor.execute("SELECT o10_parcel_number FROM o10_parcel ORDER BY o01_order_id DESC LIMIT 1;")
+    # parcel_number = cursor.fetchone()[0]
+    # cursor.close()
+    # conn.close()
+    # print(f"(✅) Zásielka {parcel_number} na zvoz kuriérom bola vytvorená")
+    # return parcel_number
+
+    # Pripojenie do databázy cez pymysql
+    conn = pymysql.connect(
         host="10.57.50.168",
         port=3306,
-        database="cashapp_test",
         user="cashapp",
-        password=dbPassword
+        password=dbPassword,
+        database="cashapp_test",
+        cursorclass=pymysql.cursors.Cursor  # klasický kurzor (môžeš použiť DictCursor, ak chceš dict)
     )
-    cursor = conn.cursor()
-    cursor.execute("SELECT o10_parcel_number FROM o10_parcel ORDER BY o01_order_id DESC LIMIT 1;")
-    parcel_number = cursor.fetchone()[0]
-    cursor.close()
-    conn.close()
+
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT o10_parcel_number FROM o10_parcel ORDER BY o01_order_id DESC LIMIT 1;")
+        result = cursor.fetchone()
+        parcel_number = result[0] if result else None
+
     print(f"(✅) Zásielka {parcel_number} na zvoz kuriérom bola vytvorená")
     return parcel_number
 
