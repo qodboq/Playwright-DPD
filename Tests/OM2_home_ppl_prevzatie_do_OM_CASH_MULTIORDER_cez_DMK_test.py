@@ -1,11 +1,24 @@
 import re
 from playwright.sync_api import Page, expect
+from dotenv import load_dotenv; load_dotenv()
+from os import getenv
 
 
+# Sender
+sMeno, sPriezvisko, sEmail, sTel, sMesto, sPSC, sUlica, sPopisneCislo = (
+    getenv("sMeno"), getenv("sPriezvisko"), getenv("sEmail"), getenv("sTel"),
+    getenv("sMesto"), getenv("sPSC"), getenv("sUlica"), getenv("sPopisneCislo")
+)
 
-# Tento test odosle objednavku z OM na OM - OM2_OM_prevzatie_do_OM_CASH_cez_DMK_test.py (Platba pri prevzati)
+# Receiver
+rMeno, rPriezvisko, rEmail, rTel, rMesto, rPSC, rUlica, rPopisneCislo = (
+    getenv("rMeno"), getenv("rPriezvisko"), getenv("rEmail"), getenv("rTel"),
+    getenv("rMesto"), getenv("rPSC"), getenv("rUlica"), getenv("rPopisneCislo")
+)
 
-def test_om2om_(page: Page) -> None:
+# Tento test odosle objednavku z OM na OM - OM2_home_ppl_prevzatie_do_OM_CASH_cez_DMK_test.py (Platba pri prevzati)
+
+def test_om2om_multi(page: Page) -> None:
 
     # Open page DPDmojkurier.sk
     page.goto("https://twww.dpdmojkurier.sk/")
@@ -13,45 +26,73 @@ def test_om2om_(page: Page) -> None:
     # Prijatie cookies
     page.get_by_role("button", name="Prijať všetko").click()
 
+
     # Vytvorenie bjednavky na OM DPD Bratislava (Sender)
     page.get_by_role("link", name="Poslať zásielku").first.click()
     page.get_by_role("button", name="Pokračovať").first.click()
-    page.get_by_role("textbox", name="Meno").fill("Erik")
-    page.get_by_role("textbox", name="Priezvisko").fill("Valigurský")
-    page.get_by_role("textbox", name="Email").fill("erik.valigursky@bootiq.io")
-    page.get_by_role("textbox", name="Telefón").fill("+421948328484")
-    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Bratislava")
-    page.get_by_role("menuitem", name="Bratislava Devín -").click()
-    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").nth(1).click()
-    page.get_by_role("textbox", name="Ulica").click()
-    page.get_by_role("textbox", name="Ulica").fill("Ulica")
-    page.get_by_role("textbox", name="Popisné číslo").fill("1")
+    page.get_by_role("textbox", name="Meno").fill(sMeno)
+    page.get_by_role("textbox", name="Priezvisko").fill(sPriezvisko)
+    page.get_by_role("textbox", name="Email").fill(sEmail)
+    page.get_by_role("textbox", name="Telefón").fill(sTel)
+    page.locator("xpath=//label[normalize-space()='Mesto']/following::input[1]").fill(sMesto)
+    page.locator("xpath=//label[normalize-space()='PSČ']/following::input[1]").fill(sPSC)
+    page.get_by_role("textbox", name="Ulica").fill(sUlica)
+    page.get_by_role("textbox", name="Popisné číslo").fill(sPopisneCislo)
     page.get_by_text("Pobočka DPD BRATISLAVA").click()
     page.get_by_role("checkbox", name="Prosím, pre ďalší krok a").check()
     page.get_by_role("button", name="Pokračovať").click()
     page.wait_for_timeout(timeout=2000)
 
-    # Vytvorenie bjednavky na OM DPD Bratislava (Reciever)
-    page.get_by_role("textbox", name="Meno").click()
-    page.get_by_role("textbox", name="Meno").fill("Test")
-    page.get_by_role("textbox", name="Priezvisko").fill("Test")
-    page.get_by_role("textbox", name="Email").fill("email@email.com")
-    page.get_by_role("textbox", name="Telefón").fill("+421948328484")
+    # Reciever
+    page.get_by_role("textbox", name="Meno").clear()
+    page.get_by_role("textbox", name="Meno").fill(rMeno)
+    page.get_by_role("textbox", name="Priezvisko").clear()
+    page.get_by_role("textbox", name="Priezvisko").fill(rPriezvisko)
+    page.get_by_role("textbox", name="Email").fill(rEmail)
+    page.get_by_role("textbox", name="Telefón").fill(rTel)
+
+    # poslat na domacu adresu
     page.get_by_role("checkbox", name="Poslať na adresu Poslať do").uncheck()
-    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.click()
-    page.locator("div").filter(has_text=re.compile(r"^MestoPSČ$")).get_by_role("textbox").first.fill("Košice")
-    page.get_by_role("menuitem", name="Košice - 04001").click()
-    page.get_by_role("textbox", name="Ulica").click()
-    page.get_by_role("textbox", name="Ulica").fill("Ulica")
-    page.get_by_role("textbox", name="Popisné číslo").fill("1")
-    page.get_by_role("button", name="Pokračovať").click()
+    page.locator("xpath=//label[normalize-space()='Mesto']/following::input[1]").fill(rMesto)
+    page.locator("xpath=//label[normalize-space()='PSČ']/following::input[1]").fill(rPSC)
+    page.get_by_role("textbox", name="Ulica").fill(rUlica)
+    page.get_by_role("textbox", name="Popisné číslo").fill(rPopisneCislo)
+    page.get_by_role("textbox", name="Popisné číslo").click()
+    page.click("body")
     page.wait_for_timeout(timeout=2000)
+    page.get_by_role("button", name="Pokračovať").click()
 
     # Package
     page.get_by_role("img", name="add-parcel-icon").click()
     page.locator("div").filter(has_text=re.compile(r"^váha:do 5 kgdĺžka:55 cmšírka:45 cmvýška:20 cmPridať$")).get_by_role("button").click()
     page.get_by_role("button", name="Pokračovať").click()
+
+    # PPL zasielka
     page.get_by_role("checkbox", name="Prepravný štítok Digitálny").uncheck()
+
+    # Package2
+    page.get_by_role("button", name="Ďalšia zásielka").click()
+    # Reciever2
+    page.get_by_role("textbox", name="Meno").clear()
+    page.get_by_role("textbox", name="Meno").fill(rMeno)
+    page.get_by_role("textbox", name="Priezvisko").clear()
+    page.get_by_role("textbox", name="Priezvisko").fill(rPriezvisko)
+    page.get_by_role("textbox", name="Email").fill(rEmail)
+    page.get_by_role("textbox", name="Telefón").fill(rTel)
+
+    # poslat na domacu adresu
+    page.get_by_role("checkbox", name="Poslať na adresu Poslať do").uncheck()
+    page.locator("xpath=//label[normalize-space()='Mesto']/following::input[1]").fill(rMesto)
+    page.locator("xpath=//label[normalize-space()='PSČ']/following::input[1]").fill(rPSC)
+    page.get_by_role("textbox", name="Ulica").fill(rUlica)
+    page.get_by_role("textbox", name="Popisné číslo").fill(rPopisneCislo)
+    page.click("body")
+    page.wait_for_timeout(timeout=2000)
+    page.get_by_role("button", name="Pokračovať").click()
+    # Package2
+    page.get_by_role("img", name="add-parcel-icon").click()
+    page.locator("div").filter(has_text=re.compile(r"^váha:do 5 kgdĺžka:55 cmšírka:45 cmvýška:20 cmPridať$")).get_by_role("button").click()
+    page.get_by_role("button", name="Pokračovať").click()
     page.get_by_role("button", name="Pokračovať na výber platby").click()
     page.get_by_text("Platba na odbernom mieste DPD").click()
     page.get_by_role("radio", name="Platba na odbernom mieste DPD").check()
@@ -103,7 +144,7 @@ def test_login_prijatie_balika(page: Page) -> None:
     # Získame textový obsah
     text = td.text_content()
     # Vypíšeme textový obsah
-    print(text)
+    print(f"Číslo zásielky je{text}")
 
     page.get_by_role("button", name="Príjem zásielky").click()
     page.locator("#parcelNumber").fill(text)
